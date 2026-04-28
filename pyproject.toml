@@ -7,7 +7,8 @@
     dependencies = [
         "numpy",
         "pillow >= 10.0.0",
-    ]
+        "rich>=14.0.0",
+]
     authors = [
         { name = "金羿Eilles", email = "EillesWan@outlook.com" },
     ]

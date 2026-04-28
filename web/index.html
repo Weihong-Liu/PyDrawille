@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Image2Braille — 图片转盲文点阵</title>
+  <meta name="description" content="一个完全在浏览器里运行的图片转 Unicode 盲文点阵工具,支持 subpixel/density 两种渲染模式与彩色渐变。" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">⣿</span>
+      <span class="brand-name">Image2Braille</span>
+      <span class="brand-tag">基于 PyDrawille · 浏览器本地处理</span>
+    </div>
+    <nav class="links">
+      <a href="https://github.com/Weihong-Liu/PyDrawille" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="card">
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="file-input" accept="image/*" hidden />
+          <div class="dz-icon">↥</div>
+          <div class="dz-text">点击或拖入图片</div>
+          <div class="dz-hint">所有处理在你的浏览器里完成,不会上传</div>
+        </label>
+        <div class="samples">
+          <span class="samples-label">样图</span>
+          <button class="sample" data-src="samples/wheel.png">舵轮</button>
+          <button class="sample" data-src="samples/wings.png">翅膀</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>渲染设置</h3>
+        <div class="control">
+          <label>列数 <span class="val" id="cols-val">30</span></label>
+          <input type="range" id="cols" min="10" max="200" value="30" />
+        </div>
+        <div class="control">
+          <label>模式</label>
+          <select id="mode">
+            <option value="subpixel">subpixel · 2×4 子像素位图</option>
+            <option value="density">density · 9 级亮度阶</option>
+          </select>
+        </div>
+        <div class="control">
+          <label>二值化</label>
+          <select id="binarize">
+            <option value="threshold">硬阈值</option>
+            <option value="dither">Floyd-Steinberg 抖动</option>
+          </select>
+        </div>
+        <div class="control" id="threshold-row">
+          <label>阈值 <span class="val" id="threshold-val">50</span></label>
+          <input type="range" id="threshold" min="1" max="254" value="50" />
+        </div>
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox" id="invert" checked />
+            <span>反色 · 深色像素显示为实点</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>颜色渐变</h3>
+        <div class="presets">
+          <button class="preset active" data-preset="bronze">青铜</button>
+          <button class="preset" data-preset="fire">火焰</button>
+          <button class="preset" data-preset="ocean">海洋</button>
+          <button class="preset" data-preset="mono">单色</button>
+        </div>
+        <div class="control">
+          <label>自定义 hex(逗号分隔,优先于预设)</label>
+          <input type="text" id="custom-colors" placeholder="#CD7F32, #FFD700, #B8860B" />
+        </div>
+      </section>
+
+      <section class="card hint">
+        <h3>使用提示</h3>
+        <ul>
+          <li>列数小 + 低阈值 → 字符更厚重(适合 Logo)</li>
+          <li>列数大 + 抖动 → 还原灰度细节(适合照片)</li>
+          <li>渲染预览 = 浏览器看到的彩色;原始 txt = rich 标签格式,可直接 <code>print()</code> 到终端</li>
+        </ul>
+      </section>
+    </aside>
+
+    <section class="preview">
+      <div class="tabs">
+        <button class="tab active" data-tab="rendered">渲染预览</button>
+        <button class="tab" data-tab="raw">原始 txt</button>
+        <div class="tab-actions">
+          <button id="copy-btn">复制</button>
+          <button id="download-btn">下载 .txt</button>
+        </div>
+      </div>
+      <div class="output-wrap">
+        <pre id="rendered" class="braille-output"></pre>
+        <pre id="raw" class="braille-output" hidden></pre>
+        <div class="placeholder" id="placeholder">载入样图中…</div>
+      </div>
+      <div class="status" id="status">载入样图中…</div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Image2Braille · MIT</span>
+    <span class="dot">·</span>
+    <span>核心算法基于 <a href="https://github.com/EillesWan/PyDrawille" target="_blank" rel="noopener">PyDrawille</a></span>
+    <span class="dot">·</span>
+    <span>盲文字符 U+2800 – U+28FF</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

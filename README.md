@@ -6,7 +6,57 @@
 The README is also in\
 [🇬🇧 英文 English](./README.en.md)
 
+## 🌐 在线 Demo · Web Playground
+
+**[➜ weihong-liu.github.io/PyDrawille](https://weihong-liu.github.io/PyDrawille/)**
+
+不需要安装任何东西,在浏览器里直接把图片转成盲文点阵字符画 —— 全程本地处理,图片不会上传到任何服务器。支持:
+
+- 拖拽上传 / 点击上传 / 一键加载样图
+- **subpixel 模式** —— 每个字符 2×4 子像素位图,精度最高
+- **density 模式** —— 256 个盲文字按点数当作 9 级亮度阶
+- Floyd-Steinberg 抖动 或 自定义阈值二值化
+- 行级颜色渐变(青铜 / 火焰 / 海洋 / 单色 / 自定义 hex 列表)
+- 双输出: 浏览器彩色预览 + rich 标签格式 txt(可直接 `Console().print` 在真终端复现)
+
+源码与部署见 [`web/`](./web) 目录。GitHub Pages 部署由 [`.github/workflows/pages.yml`](./.github/workflows/pages.yml) 自动完成。
+
+## 📜 命令行工具 · `image_to_braille.py`
+
+仓库根目录下的 [`image_to_braille.py`](./image_to_braille.py) 是一个基于 PyDrawille 的命令行工具,功能与 web demo 等价:
+
+```bash
+# 子像素模式 + 抖动(默认)
+uv run python image_to_braille.py 你的图片.png --cols 80
+
+# 紧凑青铜风格(类似 web demo 的默认效果)
+uv run python image_to_braille.py 你的图片.png --cols 30 --threshold 50 --colors bronze --render
+
+# 密度阶模式(灰度照片更合适)
+uv run python image_to_braille.py 你的图片.png --cols 100 --mode density
+
+# 把带 rich 标签的彩色 txt 写入文件
+uv run python image_to_braille.py 你的图片.png --colors bronze --out output.txt
+```
+
+参数:
+
+| 参数 | 说明 |
+|------|------|
+| `--cols N` | 终端列数,每列 = 2 个盲文子像素 |
+| `--mode subpixel\|density` | 渲染模式 |
+| `--threshold N` | 1–254 硬阈值;留空用 Floyd-Steinberg 抖动 |
+| `--no-invert` | 不反色(默认反色,使深色像素显示为实点) |
+| `--colors PRESET\|HEX,HEX,...` | 行级渐变,预设 `bronze` / `fire` / `ocean` / `mono` 或任意 hex 列表 |
+| `--render` | 用 rich 直接渲染到终端;否则只输出带标签纯文本 |
+| `--out FILE` | 同时写入文件 |
+
+## 📚 PyDrawille 库
+
 此库开发，实为避 [drawille](https://github.com/asciimoo/drawille) 库之 [AGPLv3](https://github.com/asciimoo/drawille/blob/master/LICENSE) 协议绑架。抽丝剥茧，以新逻辑呈同种功能，是为完全独一的软件，意欲完全避开其法律风险。为正本清源，不采用其应用程序接口，不采用同种代码逻辑，以全新之面貌呈现盲文点阵图。
+
+> **本仓库为 [EillesWan/PyDrawille](https://github.com/EillesWan/PyDrawille) 之 fork**,在原作基础上追加了
+> [`image_to_braille.py`](./image_to_braille.py) CLI 工具与 [`web/`](./web) 在线 demo,核心库代码 (`PyDrawille/`) 未做改动。
 
 ### 功能说明
 
